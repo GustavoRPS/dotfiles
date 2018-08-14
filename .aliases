@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+
+# easy to navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ~='cd ~'
+alias -- -='cd -'
+
+# easy report
+alias l='ls -lFh'
+alias la='ls -lAFh'
+alias lr='ls -tRFh'
+alias lf='ls -lFh | grep "^-"'
+alias l.f='ls -lFdh .* | grep "^-"'
+alias ld='ls -lFh | grep "^d"'
+alias l.d='ls -lFdh .* | grep "^d"'
+alias lm="mount | column -t"
+alias dud='du -d 1 -h'
+alias duf='du -sh *'
+alias fdir='find . -type d -name'
+alias ff='find . -type f -name'
+alias h='history'
+alias hgrep='history | grep'
+alias lgrep='ls -lFh | grep'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS}'
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias rm='rm -i'
+alias rmf='rm -rf'
+alias p='ps axo pid,user,pcpu,comm'
+alias sizeof='wget --no-config --spider'
+alias uptime='uptime -p'
+alias free='free -h'
+alias df='df -h | grep sd |\
+    sed -e "s_/dev/sda[1-9]_\x1b[34m&\x1b[0m_" |\
+    sed -e "s_/dev/sd[b-z][1-9]_\x1b[33m&\x1b[0m_" |\
+    sed -e "s_[,0-9]*[MG]_\x1b[36m&\x1b[0m_" |\
+    sed -e "s_[0-9]*%_\x1b[32m&\x1b[0m_" |\
+    sed -e "s_9[0-9]%_\x1b[31m&\x1b[0m_" |\
+    sed -e "s_/mnt/[-_A-Za-z0-9]*_\x1b[34;1m&\x1b[0m_"'
+alias disk='df'
+alias alu='apt list --upgradable'
+# Graphical tree of sub-directories. https://www.commandlinefu.com/commands/view/710/graphical-tree-of-sub-directories
+alias lstree="ls -R | grep ':$' | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
+# Find Duplicate Files (based on size first, then MD5 hash). https://www.commandlinefu.com/commands/view/3555/find-duplicate-files-based-on-size-first-then-md5-hash
+alias findd="find -not -empty -type f -printf "%s\n" | sort -rn | uniq -d | xargs -I{} -n1 find -type f -size {}c -print0 | xargs -0 md5sum | sort | uniq -w32 --all-repeated=separate"
+# Compare two directory trees. https://www.commandlinefu.com/commands/view/2251/compare-two-directory-trees.
+alias diffd="diff <(cd dir1 && find | sort) <(cd dir2 && find | sort)"
+# Print each PATH entry on a separate line
+alias path='echo -e ${PATH//:/\\n}'
+
+# bookmarks
+alias d="cd ~/documents"
+alias dl="cd ~/downloads"
+alias dt="cd ~/desktop"
+alias ws="cd ~/workspace"
+
+# shortcuts > general
+alias c='clear'
+alias cat='ccat'
+alias ch='echo > ~/.bash_history && echo > ~/.zsh_history'
+alias cz='echo > ~/.z'
+alias e='exit'
+alias fresh='cd . && lxterminal && quit'
+alias gpg='gpg2'
+alias incognito='unset HISTFILE'
+alias ln='ln -s'
+alias mp3-dl='youtube-dl --ignore-config --extract-audio \
+    --audio-format "mp3" --audio-quality 0 --embed-thumbnail \
+    --add-metadata --metadata-from-title "%(artist)s - %(title)s" \
+    --output "%(title)s.%(ext)s"'
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+alias timer='echo "Timer started. Stop with Ctrl-D." && date "+%a, %d %b %H:%M:%S" && time cat && date "+%a, %d %b %H:%M:%S"'
+alias weather='curl -s wttr.in/Ponorogo | sed -n "1,17p"'
+alias week='date +%V'
+alias kct='pkill -f -- "browser --type=renderer"'
+
+# Record a screencast and convert it to an mpeg. https://www.commandlinefu.com/commands/view/2365/record-a-screencast-and-convert-it-to-an-mpeg
+# TODO: Fix and improve
+alias record="ffmpeg -f x11grab -r 25 -s 800x600 -i :0.0 /tmp/outputFile.mpg"
+
+# shortcuts > developer
+alias g="git"
+alias git-pull-dir='find . -mindepth 1 -maxdepth 1 -type d -print -exec git -C {} pull \;'
+alias s='subl'
+alias v='nvim'
+# Python version 3: Serve current directory tree at http://$HOSTNAME:8000/. https://www.commandlinefu.com/commands/view/7338/python-version-3-serve-current-directory-tree-at-httphostname8000
+# TODO: improve adding port arg
+alias httpserver="python -m http.server"
+# Make Grunt print stack traces by default
+command -v grunt > /dev/null && alias grunt="grunt --stack"
+
+# shortcuts > sysadmin
+# IP addresses
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en0"
+alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+# Show active network interfaces
+alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
+# Watch Network Service Activity in Real-time. https://www.commandlinefu.com/commands/view/1994/watch-network-service-activity-in-real-time
+alias hear="lsof -i"
+# Block known dirty hosts from reaching your machine. https://www.commandlinefu.com/commands/view/957/block-known-dirty-hosts-from-reaching-your-machine
+# TODO: Fix invalid URL with https://zeltser.com/malicious-ip-blocklists/
+# alias iptablesblacklist="wget -qO - http://infiltrated.net/blacklisted | awk '!/#|[a-z]/&&/./{print \"iptables -A INPUT -s "$1" -j DROP\"}'"
+
+
+# Intuitive map function
+# For example, to list all directories that contain a certain file:
+# find . -name .gitattributes | map dirname
+alias map="xargs -n1"
+
+# One of @janmoesen’s ProTip™s
+for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+  alias "${method}"="lwp-request -m '${method}'"
+done
+
+# Kill all the tabs in Chrome to free up memory
+# [C] explained: http://www.commandlinefu.com/commands/view/402/exclude-grep-from-your-grepped-output-of-ps-alias-included-in-description
+alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
+
+# Lock the screen (when going AFK)
+# TODO: Convert to i3lock
+# alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+
+# Reload the shell (i.e. invoke as a login shell)
+alias reload="exec ${SHELL} -l"
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto --group-directories-first'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
