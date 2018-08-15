@@ -4,11 +4,15 @@
     signingKey = 10F56EE70C8DA1D5
 
 [alias]
+  a = !"git add -u; git add ."
+
   # View abbreviated SHA, description, and history graph of the latest 20 commits
   l = log --pretty=oneline -n 20 --graph --abbrev-commit
 
   # View the current working tree status using the short format
   s = status -s
+
+  sclone = clone --depth 1
 
   # Show the diff between the latest commit and the current state
   d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
@@ -19,11 +23,14 @@
   # Pull in remote changes for the current repository and all its submodules
   p = !"git pull; git submodule foreach git pull origin master"
 
-  # Clone a repository including all submodules
-  c = clone --recursive
+  c = commit -am
 
   # Commit all changes
   ca = !git add -A && git commit -av
+
+  cs = commit -S -am
+
+  co = checkout
 
   # Switch to a branch, creating it if necessary
   go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
@@ -82,6 +89,8 @@
       git commit --amend -m \"$(git log -1 --pretty=%B)\n\nCloses #$1.\"; \
     fi \
   }; f"
+
+  undo = reset HEAD~1
 
 [apply]
   # Detect whitespace errors when applying a patch
@@ -150,6 +159,9 @@
 [merge]
   # Include summaries of merged commits in newly created merge commit messages
   log = true
+
+[gpg]
+    program = gpg2
 
 [push]
   # https://git-scm.com/docs/git-config#git-config-pushdefault

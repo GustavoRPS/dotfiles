@@ -10,7 +10,7 @@ alias -- -='cd -'
 
 # easy report
 alias l='ls -lFh'
-alias la='ls -lAFh'
+alias ll='ls -lAFh'
 alias lr='ls -tRFh'
 alias lf='ls -lFh | grep "^-"'
 alias l.f='ls -lFdh .* | grep "^-"'
@@ -59,7 +59,7 @@ alias ws="cd ~/workspace"
 
 # shortcuts > general
 alias c='clear'
-alias cat='ccat'
+# alias cat='ccat'
 alias ch='echo > ~/.bash_history && echo > ~/.zsh_history'
 alias cz='echo > ~/.z'
 alias e='exit'
